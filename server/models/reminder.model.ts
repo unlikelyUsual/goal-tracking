@@ -9,7 +9,7 @@ export interface IReminder extends Document {
 
 const reminderSchema = new Schema<IReminder>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "tasks", required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "users", required: true },
     taskId: { type: Schema.Types.ObjectId, ref: "tasks", required: true },
     time: { type: Date, required: true },
   },
