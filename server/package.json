@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@elysiajs/cron": "^1.0.3",
+    "@elysiajs/jwt": "^1.0.2",
     "elysia": "^1.0.14",
     "mongoose": "^8.3.2"
   }

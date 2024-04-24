@@ -12,7 +12,7 @@ export default class UserController extends BaseController {
   private async signup(context: Context) {
     const { body, set } = context;
     try {
-      const { name, email, password, height, weight } = body as any;
+      const { name, email, password, height, weight, phone } = body as any;
 
       const passHash = await Bun.password.hash(password);
 
@@ -20,6 +20,7 @@ export default class UserController extends BaseController {
         name,
         email,
         password: passHash,
+        phone,
         height,
         weight,
         bmi: Math.floor((weight / height) * height),
@@ -27,14 +28,15 @@ export default class UserController extends BaseController {
 
       this.logger.log(`Saved user`, savedUser);
 
-      return { data: {} };
+      return { data: { user: savedUser } };
     } catch (error) {
       return this.returnError(set, error);
     }
   }
 
   private async login(context: Context) {
-    const { set, body } = context;
+    //@ts-ignore
+    const { set, body, jwt } = context;
     try {
       const { email, password } = body as any;
 
@@ -68,11 +70,29 @@ export default class UserController extends BaseController {
   }
 
   private async getUser(context: Context) {
-    const { set, query, headers } = context;
+    const { set, headers } = context;
     try {
       const user = await UserModel.findById(headers.uid).select("-password");
 
       if (!user) this.returnError(set, "User not found", Http.AUTH);
+
+      return { data: { user } };
+    } catch (error) {
+      return this.returnError(set, error);
+    }
+  }
+
+  private async updateUser(context: Context) {
+    const { set, headers, body } = context;
+    try {
+      const userId = headers.uid;
+      const user = await UserModel.findById(userId).select("-password");
+
+      if (!user) this.returnError(set, "User not found", Http.AUTH);
+
+      const { height, weight } = body as any;
+
+      await UserModel.updateOne({ _id: userId }, { height, weight });
 
       return { data: { user } };
     } catch (error) {
@@ -87,12 +107,12 @@ export default class UserController extends BaseController {
           body: t.Object({
             name: t.String(),
             password: t.String(),
+            phone: t.String(),
             email: t.String({ format: "email" }),
             height: t.Number(),
             weight: t.Number(),
           }),
         })
-
         .post("/login", this.login.bind(this), {
           body: t.Object({
             password: t.String(),
@@ -100,7 +120,10 @@ export default class UserController extends BaseController {
           }),
         })
         .group("/user", (innerApp) => {
-          return innerApp.use(auth).get("/", this.getUser.bind(this));
+          return innerApp
+            .use(auth)
+            .get("/", this.getUser.bind(this))
+            .put("/", this.updateUser.bind(this));
         })
     );
   }

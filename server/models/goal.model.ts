@@ -1,14 +1,13 @@
 import mongoose, { Document, model, Schema } from "mongoose";
-import type { ITask } from "./task.model";
 
 export interface IGoal extends Document {
   _id: string;
-  userId: mongoose.Types.ObjectId; // Reference to User collection
+  userId: mongoose.Types.ObjectId;
   title: string;
   minTimeline: Date;
   maxTimeline: Date;
   startDate: Date;
-  tasks: ITask[]; // Reference to Task collection
+  tasks: string[];
 }
 
 const goalSchema = new Schema<IGoal>(

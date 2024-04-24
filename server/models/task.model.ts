@@ -9,7 +9,7 @@ export interface ITask extends Document {
   quantity: number;
   frequency: FREQUENCY;
   customDays?: number;
-  reminders: IReminder[];
+  reminders?: IReminder[];
 }
 
 const taskSchema = new Schema<ITask>({

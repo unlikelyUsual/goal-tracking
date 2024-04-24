@@ -1,17 +1,24 @@
 import { Elysia } from "elysia";
+import auth from "./config/auth";
 import { connectDb } from "./config/db.setup";
-import YtController from "./controller/yt.controller";
-import ytCron from "./cron/yt.cron";
+import GoalController from "./controllers/goalController";
+import TaskController from "./controllers/taskController";
+import UserController from "./controllers/userController";
 
 const app = new Elysia();
 
 await connectDb();
 
-app.use(new YtController().routes()); // Adding search route
-app.use(ytCron); // Adding Cron plugin
+//JWT Plugin
+app.use(auth);
+
+app.use(new UserController().routes()); // Adding users route
+app.use(new TaskController().routes()); // Adding task route
+app.use(new GoalController().routes()); // Adding goal route
 
 //Error handler
-const PORT = process.env.PORT as string;
+const PORT = process.env.PORT!;
+
 app
   // if routes match then it goes to error block
   .onError(({ code }) => {
