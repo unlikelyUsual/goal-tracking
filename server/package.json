@@ -12,6 +12,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.0.2",
     "@elysiajs/cron": "^1.0.3",
     "@elysiajs/jwt": "^1.0.2",
     "elysia": "^1.0.14",

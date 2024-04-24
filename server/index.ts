@@ -1,3 +1,4 @@
+import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import auth from "./config/auth";
 import { connectDb } from "./config/db.setup";
@@ -9,8 +10,8 @@ const app = new Elysia();
 
 await connectDb();
 
-//JWT Plugin
-app.use(auth);
+app.use(cors()); //Cors Plugin
+app.use(auth); //JWT Plugin
 
 app.use(new UserController().routes()); // Adding users route
 app.use(new TaskController().routes()); // Adding task route
