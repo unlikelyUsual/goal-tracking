@@ -1,0 +1,19 @@
+{
+  "name": "goal-tracking-server",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "dev": "bun run index.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@elysiajs/cron": "^1.0.3",
+    "elysia": "^1.0.14",
+    "mongoose": "^8.3.2"
+  }
+}
