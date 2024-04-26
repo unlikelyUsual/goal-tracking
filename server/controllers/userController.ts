@@ -36,7 +36,7 @@ export default class UserController extends BaseController {
 
   private async login(context: Context) {
     //@ts-ignore
-    const { set, body, jwt } = context;
+    const { set, body, jwt, cookie } = context;
     try {
       const { email, password } = body as any;
 
@@ -57,6 +57,12 @@ export default class UserController extends BaseController {
         id: user._id,
         email: user.email,
       });
+
+      console.log(cookie);
+
+      set.cookie = { auth: { value: token, path: "/", httpOnly: true } };
+      // cookie.auth.set({ value: token, httpOnly: true });
+      // setCookie("auth", token, { httpOnly: true });
 
       return {
         data: {

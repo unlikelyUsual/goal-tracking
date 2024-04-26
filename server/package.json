@@ -12,9 +12,12 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/cors": "^1.0.2",
     "@elysiajs/cron": "^1.0.3",
     "@elysiajs/jwt": "^1.0.2",
+    "add": "^2.0.6",
+    "bun": "^1.1.5",
     "elysia": "^1.0.14",
     "mongoose": "^8.3.2"
   }
