@@ -4,12 +4,14 @@ import { TOAST } from "@/app/utils/enums";
 import { notifyUser } from "@/app/utils/toast";
 import { EnvelopeClosedIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import { Button, Container, Flex, Link, TextField } from "@radix-ui/themes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { FormEventHandler } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
+
+  const qc = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: (data: any) => {
@@ -17,9 +19,8 @@ const LoginForm = () => {
     },
     onSuccess(data, variables, context) {
       localStorage.setItem("token", data.data.data.token);
-      router.refresh();
+      qc.invalidateQueries({ queryKey: ["user"] });
       router.replace("/dashboard");
-      router.refresh();
     },
   });
 
