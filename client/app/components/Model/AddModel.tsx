@@ -3,7 +3,7 @@ import api from "@/app/utils/api";
 import { TOAST } from "@/app/utils/enums";
 import { notifyUser } from "@/app/utils/toast";
 import { Button, Dialog, Flex, TextField } from "@radix-ui/themes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useState } from "react";
 import { DayPicker } from "react-day-picker";
@@ -14,12 +14,16 @@ export default function CreateGoalDialog({
 }: {
   children: React.ReactNode;
 }) {
+  const qc = useQueryClient();
+
   const create = useMutation({
     mutationFn: (data: any) => {
       return api.post(`/goal`, data);
     },
     onSuccess(data, variables, context) {
+      qc.invalidateQueries({ queryKey: ["goals"] });
       router.push("/dashboard");
+      router.refresh();
     },
   });
 

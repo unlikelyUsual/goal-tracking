@@ -3,7 +3,7 @@ import api from "@/app/utils/api";
 import { TOAST } from "@/app/utils/enums";
 import { notifyUser } from "@/app/utils/toast";
 import { Box, Button, Dialog, Flex, Tabs, TextField } from "@radix-ui/themes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useState } from "react";
 import Center from "../Layout/Center";
@@ -27,6 +27,7 @@ export default function AddTask({
   children: React.ReactNode;
   data: any;
 }) {
+  const qc = useQueryClient();
   const create = useMutation({
     mutationFn: (data: any) => {
       return api.post(`/task/${goalId}`, data);
@@ -34,7 +35,7 @@ export default function AddTask({
     onSuccess(data, variables, context) {
       notifyUser("Task Added", TOAST.SUCCESS);
       setIsOpen(false);
-      router.refresh();
+      qc.invalidateQueries({ queryKey: ["goal", goalId] });
     },
     onError: ({ message }) => {
       notifyUser(message, TOAST.ERROR);
@@ -48,7 +49,7 @@ export default function AddTask({
     onSuccess(data, variables, context) {
       notifyUser("Task updated", TOAST.SUCCESS);
       setIsOpen(false);
-      router.refresh();
+      qc.invalidateQueries({ queryKey: ["goal", goalId] });
     },
     onError: ({ message }) => {
       notifyUser(message, TOAST.ERROR);
@@ -78,15 +79,13 @@ export default function AddTask({
 
   const toggleDays = (idx: number) => {
     setSchedule((prev: number[]) => {
-      console.log(prev);
       for (let i = 0; i < prev.length; i++) {
         if (idx === i) {
           const wasEnabled = prev[i] === 1;
           prev[i] = wasEnabled ? 0 : 1;
         }
       }
-      console.log(prev);
-      return prev;
+      return [...prev];
     });
   };
 

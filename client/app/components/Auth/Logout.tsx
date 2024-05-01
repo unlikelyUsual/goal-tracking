@@ -1,11 +1,12 @@
 "use client";
 import api from "@/app/utils/api";
 import { Button } from "@radix-ui/themes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const LogoutButton = () => {
   const router = useRouter();
+  const qc = useQueryClient();
 
   const logoutMutation = useMutation({
     mutationFn: () => {
@@ -13,8 +14,8 @@ const LogoutButton = () => {
     },
     onSuccess(data, variables, context) {
       localStorage.removeItem("token");
+      qc.invalidateQueries({ queryKey: ["user"] });
       router.push("/login");
-      router.refresh();
     },
   });
 
