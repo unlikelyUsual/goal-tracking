@@ -20,8 +20,6 @@ This project is a web application that utilizes Bun.js and Elysia.js for server-
 - Cron run with Elysia which is run on every 5 minutes to fetch reminder and send email using Nodemailer
 - Client using radix UI for components
 
-# MongoDB Models
-
 ## User Model
 
 ### Schema
