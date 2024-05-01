@@ -9,10 +9,11 @@ const LogoutButton = () => {
 
   const logoutMutation = useMutation({
     mutationFn: () => {
-      return api.post("/logout");
+      return api.post("/user/logout");
     },
     onSuccess(data, variables, context) {
-      router.push("/");
+      localStorage.removeItem("token");
+      router.push("/login");
       router.refresh();
     },
   });

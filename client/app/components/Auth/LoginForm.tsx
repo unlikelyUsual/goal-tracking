@@ -16,7 +16,9 @@ const LoginForm = () => {
       return api.post("/login", data);
     },
     onSuccess(data, variables, context) {
-      router.replace("/");
+      localStorage.setItem("token", data.data.data.token);
+      router.refresh();
+      router.replace("/dashboard");
       router.refresh();
     },
   });

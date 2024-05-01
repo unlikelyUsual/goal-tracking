@@ -60,7 +60,7 @@ export default class UserController extends BaseController {
 
       console.log(cookie);
 
-      set.cookie = { auth: { value: token, path: "/", httpOnly: true } };
+      set.cookie = { auth: { value: token } };
       // cookie.auth.set({ value: token, httpOnly: true });
       // setCookie("auth", token, { httpOnly: true });
 
@@ -106,6 +106,21 @@ export default class UserController extends BaseController {
     }
   }
 
+  private async logout(context: Context) {
+    const { set } = context;
+    try {
+      set.cookie = { auth: { value: "" } };
+
+      return {
+        data: {
+          message: "Logged out",
+        },
+      };
+    } catch (error) {
+      return this.returnError(set, error);
+    }
+  }
+
   public routes() {
     return this.app.group("api/v1", (app) =>
       app
@@ -129,7 +144,8 @@ export default class UserController extends BaseController {
           return innerApp
             .use(auth)
             .get("/", this.getUser.bind(this))
-            .put("/", this.updateUser.bind(this));
+            .put("/", this.updateUser.bind(this))
+            .post("/logout", this.logout.bind(this));
         })
     );
   }

@@ -1,6 +1,7 @@
 import { Flex, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { Inter } from "next/font/google";
+import "react-day-picker/dist/style.css";
 import Navbar from "./components/Layout/Navbar";
 import Provider from "./components/Provider";
 import "./globals.css";

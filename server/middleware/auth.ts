@@ -6,9 +6,11 @@ const logger = new Logger("Auth Middleware");
 export const auth = (app: Elysia) =>
   app.onBeforeHandle({ as: "local" }, async (context) => {
     //@ts-ignore
-    const { set, jwt, cookie } = context;
+    const { set, jwt, cookie, headers } = context;
 
-    const token = cookie.auth.value;
+    const auth = headers["authorization"] || headers["Authorization"];
+    const headerAuth = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
+    const token = cookie.auth.value || headerAuth;
 
     if (!token) {
       set.status = 401;

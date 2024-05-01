@@ -1,13 +1,64 @@
 import { t, type Context } from "elysia";
 import { auth } from "../middleware/auth";
+import GoalModel from "../models/goal.model";
 import ReminderModel from "../models/reminder.model";
 import TaskModel from "../models/task.model";
+import { FREQUENCY } from "../utils/enums";
 import { Http } from "../utils/Http";
 import BaseController from "./baseController";
 
 export default class TaskController extends BaseController {
   constructor() {
     super(TaskController.name);
+  }
+
+  private async createTask(context: Context) {
+    const { set, params, body } = context;
+    try {
+      const { goalId } = params as any;
+
+      const saveRes = await TaskModel.create({
+        //@ts-ignore
+        ...body,
+        goalId,
+      });
+
+      await GoalModel.findByIdAndUpdate(
+        goalId,
+        {
+          $push: { tasks: saveRes.id },
+        },
+        { new: true }
+      );
+
+      return { data: { task: saveRes } };
+    } catch (error) {
+      return this.returnError(set, error);
+    }
+  }
+
+  private async updateTask(context: Context) {
+    const { set, params, body } = context;
+    try {
+      const { goalId } = params as any;
+      //@ts-ignore
+      const { id, ...rest } = body;
+
+      const updateRes = await TaskModel.findByIdAndUpdate(
+        id,
+        {
+          ...rest,
+          goalId,
+        },
+        {
+          new: true,
+        }
+      );
+
+      return { data: { task: updateRes } };
+    } catch (error) {
+      return this.returnError(set, error);
+    }
   }
 
   private async getTasks(context: Context) {
@@ -108,6 +159,25 @@ export default class TaskController extends BaseController {
     return this.app.group("api/v1", (app) =>
       app
         .use(auth)
+        .post("/task/:goalId", this.createTask.bind(this), {
+          body: t.Object({
+            title: t.String(),
+            quantity: t.Number(),
+            frequency: t.Enum(FREQUENCY),
+            customDays: t.Number(),
+            reminders: t.Array(t.Any()),
+          }),
+        })
+        .put("/task/:goalId", this.createTask.bind(this), {
+          body: t.Object({
+            id: t.String(),
+            title: t.String(),
+            quantity: t.Number(),
+            frequency: t.Enum(FREQUENCY),
+            customDays: t.Number(),
+            reminders: t.Array(t.Any()),
+          }),
+        })
         .get("/task/:goalId", this.getTasks.bind(this))
         .post("/reminder", this.createReminder.bind(this), {
           body: t.Object({

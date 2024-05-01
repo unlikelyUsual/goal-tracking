@@ -7,7 +7,7 @@ import {
   LockClosedIcon,
   PersonIcon,
 } from "@radix-ui/react-icons";
-import { Button, Container, Flex, TextField } from "@radix-ui/themes";
+import { Button, Container, Flex, Link, TextField } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useState } from "react";
 
@@ -69,6 +69,11 @@ export default function SignUpForm() {
             </TextField.Root>
             <Button loading={loading} type="submit">
               Sign up
+            </Button>
+          </Flex>
+          <Flex direction={"row"} justify={"center"} align={"center"} pt={"4"}>
+            <Button color="gray" variant="outline" highContrast size="1">
+              <Link href={"/login"}>Login</Link>
             </Button>
           </Flex>
         </form>
