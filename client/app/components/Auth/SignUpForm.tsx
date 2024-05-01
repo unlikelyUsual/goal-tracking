@@ -5,34 +5,51 @@ import { notifyUser } from "@/app/utils/toast";
 import {
   EnvelopeClosedIcon,
   LockClosedIcon,
+  MobileIcon,
   PersonIcon,
 } from "@radix-ui/react-icons";
 import { Button, Container, Flex, Link, TextField } from "@radix-ui/themes";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler } from "react";
 
 export default function SignUpForm() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const qc = useQueryClient();
+
+  const signUp = useMutation({
+    mutationFn: (data: any) => {
+      return api.post("/signup", data);
+    },
+    onSuccess(data, variables, context) {
+      qc.invalidateQueries({ queryKey: ["user"] });
+      router.replace("/login");
+    },
+  });
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       const formData = new FormData(e.target as any);
       const email = formData.get("email");
       const password = formData.get("password");
       const name = formData.get("name");
+      const phone = formData.get("phone");
+      const height = Number(formData.get("height"));
+      const weight = Number(formData.get("weight"));
 
-      const resp = await api.post("/user", {});
-
-      router.replace("/");
-      router.refresh();
+      signUp.mutate({
+        email,
+        password,
+        name,
+        phone,
+        weight,
+        height,
+      });
+      notifyUser("Successfully signed up", TOAST.SUCCESS);
     } catch (err) {
       console.error(err);
       notifyUser("Something went wrong", TOAST.ERROR);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -67,7 +84,22 @@ export default function SignUpForm() {
                 <LockClosedIcon height={"8"} width={"8"} />
               </TextField.Slot>
             </TextField.Root>
-            <Button loading={loading} type="submit">
+            <TextField.Root name="phone" type="text" placeholder="Phone">
+              <TextField.Slot>
+                <MobileIcon />
+              </TextField.Slot>
+            </TextField.Root>
+            <TextField.Root
+              name="height"
+              type="number"
+              placeholder="Height"
+            ></TextField.Root>
+            <TextField.Root
+              name="weight"
+              type="number"
+              placeholder="Weight"
+            ></TextField.Root>
+            <Button loading={signUp.isPending} type="submit">
               Sign up
             </Button>
           </Flex>

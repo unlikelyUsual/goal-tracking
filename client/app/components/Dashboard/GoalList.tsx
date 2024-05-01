@@ -45,19 +45,27 @@ const GoalList = () => {
 
   if (goals.data?.length <= 0) {
     return (
-      <Callout.Root>
-        <Callout.Icon>
-          <InfoCircledIcon />
-        </Callout.Icon>
-        <Callout.Text>Create your first project</Callout.Text>
-      </Callout.Root>
+      <Flex direction={"column"}>
+        <Callout.Root mb={"5"}>
+          <Callout.Icon>
+            <InfoCircledIcon />
+          </Callout.Icon>
+          <Callout.Text>Create your first project</Callout.Text>
+        </Callout.Root>
+        <CreateGoalDialog>
+          <Button variant="outline" ml="3" size="1">
+            <PlusIcon />
+            Create Goal
+          </Button>
+        </CreateGoalDialog>
+      </Flex>
     );
   }
 
   const rows = goals?.data?.map((goal: any, idx: number) => (
     <Table.Row key={idx}>
       <Table.RowHeaderCell>
-        <Link href={`goal/${goal._id}`}>{goal.title}</Link>
+        <Link href={`goals/${goal._id}`}>{goal.title}</Link>
       </Table.RowHeaderCell>
 
       <Table.Cell>

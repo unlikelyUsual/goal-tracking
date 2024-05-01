@@ -28,6 +28,7 @@ export default function AddTask({
   data: any;
 }) {
   const qc = useQueryClient();
+
   const create = useMutation({
     mutationFn: (data: any) => {
       return api.post(`/task/${goalId}`, data);
@@ -139,11 +140,17 @@ export default function AddTask({
                 defaultValue={data?.quantity}
               ></TextField.Root>
             </Flex>
-            <Tabs.Root defaultValue={frequency} onChange={setFreq}>
+            <Tabs.Root defaultValue={frequency}>
               <Tabs.List justify={"center"}>
-                <Tabs.Trigger value="weekly">Weekly</Tabs.Trigger>
-                <Tabs.Trigger value="daily">Daily</Tabs.Trigger>
-                <Tabs.Trigger value="custom">Custom</Tabs.Trigger>
+                <Tabs.Trigger onClick={() => setFreq("weekly")} value="weekly">
+                  Weekly
+                </Tabs.Trigger>
+                <Tabs.Trigger onClick={() => setFreq("daily")} value="daily">
+                  Daily
+                </Tabs.Trigger>
+                <Tabs.Trigger onClick={() => setFreq("custom")} value="custom">
+                  Custom
+                </Tabs.Trigger>
               </Tabs.List>
               <Box pt="4">
                 <Tabs.Content value="daily">

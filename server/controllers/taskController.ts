@@ -168,7 +168,7 @@ export default class TaskController extends BaseController {
             reminders: t.Array(t.Any()),
           }),
         })
-        .put("/task/:goalId", this.createTask.bind(this), {
+        .put("/task/:goalId", this.updateTask.bind(this), {
           body: t.Object({
             id: t.String(),
             title: t.String(),
