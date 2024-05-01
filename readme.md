@@ -62,6 +62,18 @@ This project is a web application that utilizes Bun.js and Elysia.js for server-
 - `taskId`: String
 - `time`: Date
 
+## How To Run
+
 ```bash
 git clone https://github.com/your-username/your-project.git
+```
+
+```bash
+cd server
+bun run dev
+```
+
+```bash
+cd client
+npm run dev
 ```
